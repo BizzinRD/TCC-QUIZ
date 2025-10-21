@@ -3,7 +3,7 @@ function navigateTo(page) {
   window.location.href = page;
 }
 
-FUTEBOL
+fUTEBOL
 const questions = [
   {
     question: "O brasileirao ja consagrou 20 clubes diferentes como campeao.",
@@ -75,6 +75,7 @@ const clearRecordsButton = document.getElementById('clear-records-btn');
 // ===================== SISTEMA DE RECORDES =====================
 
 const HIGH_SCORES_KEY = 'highScores';
+const currentPage = 'Futebol'; // Define o tema atual do quiz
 
 function getHighScores() {
   const highScoresString = localStorage.getItem(HIGH_SCORES_KEY);
@@ -90,7 +91,7 @@ function renderHighScores() {
   highScoresEl.innerHTML = '';
   highScores.forEach(scoreItem => {
     const li = document.createElement('li');
-    li.textContent = `${scoreItem.name}: ${scoreItem.score}`;
+    li.textContent = `${scoreItem.name}: ${scoreItem.score} pontos - Página: ${scoreItem.page || 'Desconhecida'}`;
     highScoresEl.appendChild(li);
   });
 }
@@ -102,7 +103,7 @@ function checkAndSaveHighScore() {
   if (isNewHighScore) {
     const playerName = prompt("Parabéns! Você fez um novo recorde! Digite seu nome:");
     if (playerName) {
-      highScores.push({ name: playerName, score: score });
+      highScores.push({ name: playerName, score: score, page: currentPage });
       highScores.sort((a, b) => b.score - a.score);
       if (highScores.length > 5) {
         highScores.pop();
@@ -284,6 +285,7 @@ const clearRecordsButton = document.getElementById('clear-records-btn');
 // ===================== SISTEMA DE RECORDES =====================
 
 const HIGH_SCORES_KEY = 'highScores';
+const currentPage = 'Geografia'; // Define o tema atual do quiz
 
 function getHighScores() {
   const highScoresString = localStorage.getItem(HIGH_SCORES_KEY);
@@ -299,7 +301,7 @@ function renderHighScores() {
   highScoresEl.innerHTML = '';
   highScores.forEach(scoreItem => {
     const li = document.createElement('li');
-    li.textContent = `${scoreItem.name}: ${scoreItem.score}`;
+    li.textContent = `${scoreItem.name}: ${scoreItem.score} pontos - Página: ${scoreItem.page || 'Desconhecida'}`;
     highScoresEl.appendChild(li);
   });
 }
@@ -311,7 +313,7 @@ function checkAndSaveHighScore() {
   if (isNewHighScore) {
     const playerName = prompt("Parabéns! Você fez um novo recorde! Digite seu nome:");
     if (playerName) {
-      highScores.push({ name: playerName, score: score });
+      highScores.push({ name: playerName, score: score, page: currentPage });
       highScores.sort((a, b) => b.score - a.score);
       if (highScores.length > 5) {
         highScores.pop();
@@ -420,6 +422,7 @@ if (clearRecordsButton) {
 
 loadQuestion();
 renderHighScores();
+
 
 POLITICA
 const questions = [
@@ -493,6 +496,7 @@ const clearRecordsButton = document.getElementById('clear-records-btn');
 // ===================== SISTEMA DE RECORDES =====================
 
 const HIGH_SCORES_KEY = 'highScores';
+const currentPage = 'Política'; // Define o tema atual do quiz
 
 function getHighScores() {
   const highScoresString = localStorage.getItem(HIGH_SCORES_KEY);
@@ -508,7 +512,7 @@ function renderHighScores() {
   highScoresEl.innerHTML = '';
   highScores.forEach(scoreItem => {
     const li = document.createElement('li');
-    li.textContent = `${scoreItem.name}: ${scoreItem.score}`;
+    li.textContent = `${scoreItem.name}: ${scoreItem.score} pontos - Página: ${scoreItem.page || 'Desconhecida'}`;
     highScoresEl.appendChild(li);
   });
 }
@@ -520,7 +524,7 @@ function checkAndSaveHighScore() {
   if (isNewHighScore) {
     const playerName = prompt("Parabéns! Você fez um novo recorde! Digite seu nome:");
     if (playerName) {
-      highScores.push({ name: playerName, score: score });
+      highScores.push({ name: playerName, score: score, page: currentPage });
       highScores.sort((a, b) => b.score - a.score);
       if (highScores.length > 5) {
         highScores.pop();
@@ -630,6 +634,8 @@ if (clearRecordsButton) {
 loadQuestion();
 renderHighScores();
 
+
+
 TI
 const questions = [
     {
@@ -702,140 +708,140 @@ const questions = [
   // ===================== SISTEMA DE RECORDES =====================
   
   const HIGH_SCORES_KEY = 'highScores';
-  
-  function getHighScores() {
-    const highScoresString = localStorage.getItem(HIGH_SCORES_KEY);
-    return highScoresString ? JSON.parse(highScoresString) : [];
-  }
-  
-  function saveHighScores(highScores) {
-    localStorage.setItem(HIGH_SCORES_KEY, JSON.stringify(highScores));
-  }
-  
-  function renderHighScores() {
-    const highScores = getHighScores();
-    highScoresEl.innerHTML = '';
-    highScores.forEach(scoreItem => {
-      const li = document.createElement('li');
-      li.textContent = `${scoreItem.name}: ${scoreItem.score}`;
-      highScoresEl.appendChild(li);
-    });
-  }
-  
-  function checkAndSaveHighScore() {
-    const highScores = getHighScores();
-    const isNewHighScore = highScores.length < 5 || score > highScores[highScores.length - 1].score;
-  
-    if (isNewHighScore) {
-      const playerName = prompt("Parabéns! Você fez um novo recorde! Digite seu nome:");
-      if (playerName) {
-        highScores.push({ name: playerName, score: score });
-        highScores.sort((a, b) => b.score - a.score);
-        if (highScores.length > 5) {
-          highScores.pop();
-        }
-        saveHighScores(highScores);
-        renderHighScores();
+const currentPage = 'Tecnologia'; // Define o tema atual do quiz
+
+function getHighScores() {
+  const highScoresString = localStorage.getItem(HIGH_SCORES_KEY);
+  return highScoresString ? JSON.parse(highScoresString) : [];
+}
+
+function saveHighScores(highScores) {
+  localStorage.setItem(HIGH_SCORES_KEY, JSON.stringify(highScores));
+}
+
+function renderHighScores() {
+  const highScores = getHighScores();
+  highScoresEl.innerHTML = '';
+  highScores.forEach(scoreItem => {
+    const li = document.createElement('li');
+    li.textContent = `${scoreItem.name}: ${scoreItem.score} pontos - Página: ${scoreItem.page || 'Desconhecida'}`;
+    highScoresEl.appendChild(li);
+  });
+}
+
+function checkAndSaveHighScore() {
+  const highScores = getHighScores();
+  const isNewHighScore = highScores.length < 5 || score > highScores[highScores.length - 1].score;
+
+  if (isNewHighScore) {
+    const playerName = prompt("Parabéns! Você fez um novo recorde! Digite seu nome:");
+    if (playerName) {
+      highScores.push({ name: playerName, score: score, page: currentPage });
+      highScores.sort((a, b) => b.score - a.score);
+      if (highScores.length > 5) {
+        highScores.pop();
       }
-    }
-  }
-  
-  // NOVO: Função para limpar os recordes
-  function clearHighScores() {
-    const confirmation = confirm("Tem certeza que deseja limpar todos os recordes?");
-    if (confirmation) {
-      localStorage.removeItem(HIGH_SCORES_KEY);
+      saveHighScores(highScores);
       renderHighScores();
     }
   }
-  
-  // ===================== LÓGICA DO QUIZ =====================
-  
-  function loadQuestion() {
-    feedbackEl.className = 'feedback';
-  
-    if (currentQuestion < questions.length) {
-      const current = questions[currentQuestion];
-      questionEl.textContent = current.question;
-  
-      if (current.image) {
-        questionImageEl.src = current.image;
-        questionImageEl.alt = "Imagem relacionada à pergunta";
-        questionImageEl.style.display = "block";
-      } else {
-        questionImageEl.style.display = "none";
-      }
-  
-      trueBtn.disabled = false;
-      falseBtn.disabled = false;
-      trueBtn.style.display = "inline-block";
-      falseBtn.style.display = "inline-block";
-  
+}
+
+// NOVO: Função para limpar os recordes
+function clearHighScores() {
+  const confirmation = confirm("Tem certeza que deseja limpar todos os recordes?");
+  if (confirmation) {
+    localStorage.removeItem(HIGH_SCORES_KEY);
+    renderHighScores();
+  }
+}
+
+// ===================== LÓGICA DO QUIZ =====================
+
+function loadQuestion() {
+  feedbackEl.className = 'feedback';
+
+  if (currentQuestion < questions.length) {
+    const current = questions[currentQuestion];
+    questionEl.textContent = current.question;
+
+    if (current.image) {
+      questionImageEl.src = current.image;
+      questionImageEl.alt = "Imagem relacionada à pergunta";
+      questionImageEl.style.display = "block";
     } else {
-      // Quiz finalizado
-      questionEl.textContent = "Quiz finalizado!";
       questionImageEl.style.display = "none";
-      trueBtn.style.display = "none";
-      falseBtn.style.display = "none";
-      feedbackEl.textContent = `Sua pontuação final: ${score} / ${questions.length}`;
-      feedbackEl.className = 'feedback show correct';
-  
-      checkAndSaveHighScore();
     }
-    updateScore();
+
+    trueBtn.disabled = false;
+    falseBtn.disabled = false;
+    trueBtn.style.display = "inline-block";
+    falseBtn.style.display = "inline-block";
+
+  } else {
+    // Quiz finalizado
+    questionEl.textContent = "Quiz finalizado!";
+    questionImageEl.style.display = "none";
+    trueBtn.style.display = "none";
+    falseBtn.style.display = "none";
+    feedbackEl.textContent = `Sua pontuação final: ${score} / ${questions.length}`;
+    feedbackEl.className = 'feedback show correct';
+
+    checkAndSaveHighScore();
   }
-  
-  function updateScore() {
-    scoreEl.textContent = `Pontuação: ${score} / ${questions.length}`;
+  updateScore();
+}
+
+function updateScore() {
+  scoreEl.textContent = `Pontuação: ${score} / ${questions.length}`;
+}
+
+function giveFeedback(isCorrect) {
+  if (isCorrect) {
+    feedbackEl.textContent = "✔ Correto!";
+    feedbackEl.className = 'feedback show correct';
+  } else {
+    feedbackEl.textContent = "✘ Errado!";
+    feedbackEl.className = 'feedback show incorrect';
   }
-  
-  function giveFeedback(isCorrect) {
-    if (isCorrect) {
-      feedbackEl.textContent = "✔ Correto!";
-      feedbackEl.className = 'feedback show correct';
-    } else {
-      feedbackEl.textContent = "✘ Errado!";
-      feedbackEl.className = 'feedback show incorrect';
-    }
-  }
-  
-  function answerQuestion(userAnswer) {
-    trueBtn.disabled = true;
-    falseBtn.disabled = true;
-  
-    const correctAnswer = questions[currentQuestion].answer;
-    const isCorrect = userAnswer === correctAnswer;
-  
-    if (isCorrect) score++;
-  
-    giveFeedback(isCorrect);
-  
-    setTimeout(() => {
-      currentQuestion++;
-      loadQuestion();
-    }, 1500);
-  }
-  
-  // Função para reiniciar o quiz
-  function resetQuiz() {
-    currentQuestion = 0;
-    score = 0;
-    feedbackEl.textContent = '';
+}
+
+function answerQuestion(userAnswer) {
+  trueBtn.disabled = true;
+  falseBtn.disabled = true;
+
+  const correctAnswer = questions[currentQuestion].answer;
+  const isCorrect = userAnswer === correctAnswer;
+
+  if (isCorrect) score++;
+
+  giveFeedback(isCorrect);
+
+  setTimeout(() => {
+    currentQuestion++;
     loadQuestion();
-  }
-  
-  trueBtn.addEventListener('click', () => answerQuestion(true));
-  falseBtn.addEventListener('click', () => answerQuestion(false));
-  
-  if (resetButton) {
-    resetButton.addEventListener('click', resetQuiz);
-  }
-  
-  // NOVO: Adiciona o event listener para o botão de limpar recordes
-  if (clearRecordsButton) {
-    clearRecordsButton.addEventListener('click', clearHighScores);
-  }
-  
+  }, 1500);
+}
+
+// Função para reiniciar o quiz
+function resetQuiz() {
+  currentQuestion = 0;
+  score = 0;
+  feedbackEl.textContent = '';
   loadQuestion();
-  renderHighScores();
-  
+}
+
+trueBtn.addEventListener('click', () => answerQuestion(true));
+falseBtn.addEventListener('click', () => answerQuestion(false));
+
+if (resetButton) {
+  resetButton.addEventListener('click', resetQuiz);
+}
+
+// NOVO: Adiciona o event listener para o botão de limpar recordes
+if (clearRecordsButton) {
+  clearRecordsButton.addEventListener('click', clearHighScores);
+}
+
+loadQuestion();
+renderHighScores();
