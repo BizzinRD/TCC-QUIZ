@@ -1,0 +1,841 @@
+TEMA
+function navigateTo(page) {
+  window.location.href = page;
+}
+
+FUTEBOL
+const questions = [
+  {
+    question: "O brasileirao ja consagrou 20 clubes diferentes como campeao.",
+    answer: false,
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2-t15zTGiN9T0PDRD-z2Eg98hoyfNBB_L3g&s"
+  },
+  {
+    question: "A seleçao brasileira é a unica a ter participado de todas as ediçoes de copa do mundo.",
+    answer: true,
+    image: "https://heraldodemexico.com.mx/u/fotografias/m/2022/12/5/f1280x720-630257_761932_7415.jpg"
+  },
+  {
+    question: "O Palmeiras é o maior campeao do brasileirao.",
+    answer: true,
+    image: "https://tse4.mm.bing.net/th/id/OIP.C7fb2GdkNORjs37bU7z5wwHaEL?rs=1&pid=ImgDetMain&o=7&rm=3"
+  },
+  {
+    question: "O arsenal foi campeao da champions league em 2006.",
+    answer: false,
+    image: "https://tse1.mm.bing.net/th/id/OIP.Ead0Xmp3BS46DuuiE9lneQHaE4?w=700&h=462&rs=1&pid=ImgDetMain&o=7&rm=3"
+  },
+  {
+    question: "O santos foi o campeao do brasileirao de 2003.",
+    answer: false,
+    image: "https://ludopedio.org.br/wp-content/uploads/Diego-e-Robinho-foram-a-sensa%C3%A7%C3%A3o-no-Campeonato-Brasileiro-de-2002.-Foto-Santos-FC..jpeg"
+  },
+  {
+     question: "O lateral direito Phillip Lahm já tomou cartão vermelho. ",
+     answer: false,
+     image: "https://tse1.mm.bing.net/th/id/OIP.tBIjd2G94u5KLBuKsHm9xwHaKj?rs=1&pid=ImgDetMain&o=7&rm=3"
+  },
+  {
+    question: "Neymar é o maior artilheiro da história da seleção brasileira. ",
+    answer: true,
+    image: "https://tse3.mm.bing.net/th/id/OIP.rRUeAFiVvSeD6nqCMq1siQHaE8?rs=1&pid=ImgDetMain&o=7&rm=3"
+  },
+  {
+    question: "A seleção da Dinamarca tem Eurocopa. ",
+    answer: true,
+    image: "https://tse4.mm.bing.net/th/id/OIP.-oKp_AEA1V9XI4FN5Tjo1wHaEK?rs=1&pid=ImgDetMain&o=7&rm=3"
+  },
+  {
+    question: "O Ronaldo fenômeno foi artilheiro e campeão da champions de 2001/02. ",
+    answer: false,
+    image: "https://c8.alamy.com/comp/GAB222/soccer-uefa-champions-league-final-real-madrid-v-bayer-leverkusen-GAB222.jpg"
+  },
+  {
+    question: "A seleção da Alemanha é a maior vice em Copas do Mundo.",
+    answer: true,
+    image: "https://lendasdofutebol.com/wp-content/uploads/2021/03/copa-do-mundo-2014-768x415.jpg"
+  },
+];
+
+let currentQuestion = 0;
+let score = 0;
+
+const questionEl = document.getElementById('question');
+const questionImageEl = document.getElementById('question-image');
+const trueBtn = document.getElementById('true-btn');
+const falseBtn = document.getElementById('false-btn');
+const feedbackEl = document.getElementById('feedback');
+const scoreEl = document.getElementById('score');
+const highScoresEl = document.getElementById('high-scores');
+// Referência ao botão de reiniciar
+const resetButton = document.getElementById('reset-btn');
+// NOVO: Referência ao botão de limpar recordes
+const clearRecordsButton = document.getElementById('clear-records-btn');
+
+// ===================== SISTEMA DE RECORDES =====================
+
+const HIGH_SCORES_KEY = 'highScores';
+
+function getHighScores() {
+  const highScoresString = localStorage.getItem(HIGH_SCORES_KEY);
+  return highScoresString ? JSON.parse(highScoresString) : [];
+}
+
+function saveHighScores(highScores) {
+  localStorage.setItem(HIGH_SCORES_KEY, JSON.stringify(highScores));
+}
+
+function renderHighScores() {
+  const highScores = getHighScores();
+  highScoresEl.innerHTML = '';
+  highScores.forEach(scoreItem => {
+    const li = document.createElement('li');
+    li.textContent = `${scoreItem.name}: ${scoreItem.score}`;
+    highScoresEl.appendChild(li);
+  });
+}
+
+function checkAndSaveHighScore() {
+  const highScores = getHighScores();
+  const isNewHighScore = highScores.length < 5 || score > highScores[highScores.length - 1].score;
+
+  if (isNewHighScore) {
+    const playerName = prompt("Parabéns! Você fez um novo recorde! Digite seu nome:");
+    if (playerName) {
+      highScores.push({ name: playerName, score: score });
+      highScores.sort((a, b) => b.score - a.score);
+      if (highScores.length > 5) {
+        highScores.pop();
+      }
+      saveHighScores(highScores);
+      renderHighScores();
+    }
+  }
+}
+
+// NOVO: Função para limpar os recordes
+function clearHighScores() {
+  const confirmation = confirm("Tem certeza que deseja limpar todos os recordes?");
+  if (confirmation) {
+    localStorage.removeItem(HIGH_SCORES_KEY);
+    renderHighScores();
+  }
+}
+
+// ===================== LÓGICA DO QUIZ =====================
+
+function loadQuestion() {
+  feedbackEl.className = 'feedback';
+
+  if (currentQuestion < questions.length) {
+    const current = questions[currentQuestion];
+    questionEl.textContent = current.question;
+
+    if (current.image) {
+      questionImageEl.src = current.image;
+      questionImageEl.alt = "Imagem relacionada à pergunta";
+      questionImageEl.style.display = "block";
+    } else {
+      questionImageEl.style.display = "none";
+    }
+
+    trueBtn.disabled = false;
+    falseBtn.disabled = false;
+    trueBtn.style.display = "inline-block";
+    falseBtn.style.display = "inline-block";
+
+  } else {
+    // Quiz finalizado
+    questionEl.textContent = "Quiz finalizado!";
+    questionImageEl.style.display = "none";
+    trueBtn.style.display = "none";
+    falseBtn.style.display = "none";
+    feedbackEl.textContent = `Sua pontuação final: ${score} / ${questions.length}`;
+    feedbackEl.className = 'feedback show correct';
+
+    checkAndSaveHighScore();
+  }
+  updateScore();
+}
+
+function updateScore() {
+  scoreEl.textContent = `Pontuação: ${score} / ${questions.length}`;
+}
+
+function giveFeedback(isCorrect) {
+  if (isCorrect) {
+    feedbackEl.textContent = "✔ Correto!";
+    feedbackEl.className = 'feedback show correct';
+  } else {
+    feedbackEl.textContent = "✘ Errado!";
+    feedbackEl.className = 'feedback show incorrect';
+  }
+}
+
+function answerQuestion(userAnswer) {
+  trueBtn.disabled = true;
+  falseBtn.disabled = true;
+
+  const correctAnswer = questions[currentQuestion].answer;
+  const isCorrect = userAnswer === correctAnswer;
+
+  if (isCorrect) score++;
+
+  giveFeedback(isCorrect);
+
+  setTimeout(() => {
+    currentQuestion++;
+    loadQuestion();
+  }, 1500);
+}
+
+// Função para reiniciar o quiz
+function resetQuiz() {
+  currentQuestion = 0;
+  score = 0;
+  feedbackEl.textContent = '';
+  loadQuestion();
+}
+
+trueBtn.addEventListener('click', () => answerQuestion(true));
+falseBtn.addEventListener('click', () => answerQuestion(false));
+
+if (resetButton) {
+  resetButton.addEventListener('click', resetQuiz);
+}
+
+// NOVO: Adiciona o event listener para o botão de limpar recordes
+if (clearRecordsButton) {
+  clearRecordsButton.addEventListener('click', clearHighScores);
+}
+
+loadQuestion();
+renderHighScores();
+
+GEOGRAFIA
+const questions = [
+    {
+      question: "O Brasil faz fronteira com todos os países da América do Sul, exceto o Chile e o Equador.",
+      answer: true,
+      image: "https://tse2.mm.bing.net/th/id/OIP.FnAAeK7t9oYX2ZSx1sTjXwHaEK?w=1280&h=720&rs=1&pid=ImgDetMain&o=7&rm=3"
+    },
+    {
+      question: "O Oceano Pacífico é o maior oceano do planeta.",
+      answer: true,
+      image: "https://cdn.pixabay.com/photo/2022/11/20/09/43/moorea-7603918_1280.jpg"
+    },
+    {
+      question: "A capital da Austrália é Canberra.",
+      answer: true,
+      image: "https://www.thoughtco.com/thmb/_D5wLVKFgD9eousbQIKEBYsBkQk=/800x540/filters:no_upscale():max_bytes(150000):strip_icc()/sydney-56a37ada5f9b58b7d0d22a38.jpg"
+    },
+    {
+      question: "O Rio Amazonas é o mais longo do mundo.",
+      answer: false,
+      image: "https://riosdelplaneta.com/wp-content/uploads/2017/11/rio-amazonas-2-1024x682.jpg"
+    },
+    {
+      question: "A capital do Canadá é Toronto.",
+      answer: false,
+      image: "https://tse1.mm.bing.net/th/id/OIP.JzntrredtUfMf0gpzzuhYAHaEK?rs=1&pid=ImgDetMain&o=7&rm=3"
+    },
+    {
+      question: "A capital da Holanda é amsterdam.",
+      answer: true,
+      image: "https://content.skyscnr.com/m/087e543d5ac76564/original/GettyImages-530529539.jpg?resize=1800px:1800px&quality=100"
+    },
+    {
+      question: "A Guiana Francesa está localizada no continente africano.",
+      answer: false,
+      image: "https://static.vecteezy.com/system/resources/previews/002/579/805/large_2x/french-guiana-officially-flag-free-vector.jpg"
+    },
+    {
+      question: "O deserto do Saara está localizado entre a China e a Mongólia.",
+      answer: false,
+      image: "https://noticiasconcursos.com.br/wp-content/uploads/2020/12/noticiasconcursos.com.br-deserto-do-saara-conheca-suas-caracteristicas-deserto-do-saara.jpg"
+    },
+    {
+      question: "O Kilimanjaro é a montanha mais alta do continente Africano.",
+      answer: true,
+      image: "https://th.bing.com/th/id/R.6cc0bde1049e9302308629946a2e7cff?rik=qb7i961rClPySw&riu=http%3a%2f%2fwww.awesomestories.com%2fimages%2fuser%2f343e4b5272794dcb70e457233652511a.jpg&ehk=zm2QjOGocTSotHnm%2bVswGUDNNds3SNGtFVsc8cbcLvc%3d&risl=&pid=ImgRaw&r=0"
+    },
+    {
+      question: "A cordilheira dos andes é localizada na Ásia.",
+      answer: false,
+      image: "https://conhecimentocientifico.r7.com/wp-content/uploads/2020/09/cordilheira-dos-andes-o-que-e-formacao-caracteristicas-e-curiosidades.jpg"
+    },
+  ];
+  
+  let currentQuestion = 0;
+let score = 0;
+
+const questionEl = document.getElementById('question');
+const questionImageEl = document.getElementById('question-image');
+const trueBtn = document.getElementById('true-btn');
+const falseBtn = document.getElementById('false-btn');
+const feedbackEl = document.getElementById('feedback');
+const scoreEl = document.getElementById('score');
+const highScoresEl = document.getElementById('high-scores');
+// Referência ao botão de reiniciar
+const resetButton = document.getElementById('reset-btn');
+// NOVO: Referência ao botão de limpar recordes
+const clearRecordsButton = document.getElementById('clear-records-btn');
+
+// ===================== SISTEMA DE RECORDES =====================
+
+const HIGH_SCORES_KEY = 'highScores';
+
+function getHighScores() {
+  const highScoresString = localStorage.getItem(HIGH_SCORES_KEY);
+  return highScoresString ? JSON.parse(highScoresString) : [];
+}
+
+function saveHighScores(highScores) {
+  localStorage.setItem(HIGH_SCORES_KEY, JSON.stringify(highScores));
+}
+
+function renderHighScores() {
+  const highScores = getHighScores();
+  highScoresEl.innerHTML = '';
+  highScores.forEach(scoreItem => {
+    const li = document.createElement('li');
+    li.textContent = `${scoreItem.name}: ${scoreItem.score}`;
+    highScoresEl.appendChild(li);
+  });
+}
+
+function checkAndSaveHighScore() {
+  const highScores = getHighScores();
+  const isNewHighScore = highScores.length < 5 || score > highScores[highScores.length - 1].score;
+
+  if (isNewHighScore) {
+    const playerName = prompt("Parabéns! Você fez um novo recorde! Digite seu nome:");
+    if (playerName) {
+      highScores.push({ name: playerName, score: score });
+      highScores.sort((a, b) => b.score - a.score);
+      if (highScores.length > 5) {
+        highScores.pop();
+      }
+      saveHighScores(highScores);
+      renderHighScores();
+    }
+  }
+}
+
+// NOVO: Função para limpar os recordes
+function clearHighScores() {
+  const confirmation = confirm("Tem certeza que deseja limpar todos os recordes?");
+  if (confirmation) {
+    localStorage.removeItem(HIGH_SCORES_KEY);
+    renderHighScores();
+  }
+}
+
+// ===================== LÓGICA DO QUIZ =====================
+
+function loadQuestion() {
+  feedbackEl.className = 'feedback';
+
+  if (currentQuestion < questions.length) {
+    const current = questions[currentQuestion];
+    questionEl.textContent = current.question;
+
+    if (current.image) {
+      questionImageEl.src = current.image;
+      questionImageEl.alt = "Imagem relacionada à pergunta";
+      questionImageEl.style.display = "block";
+    } else {
+      questionImageEl.style.display = "none";
+    }
+
+    trueBtn.disabled = false;
+    falseBtn.disabled = false;
+    trueBtn.style.display = "inline-block";
+    falseBtn.style.display = "inline-block";
+
+  } else {
+    // Quiz finalizado
+    questionEl.textContent = "Quiz finalizado!";
+    questionImageEl.style.display = "none";
+    trueBtn.style.display = "none";
+    falseBtn.style.display = "none";
+    feedbackEl.textContent = `Sua pontuação final: ${score} / ${questions.length}`;
+    feedbackEl.className = 'feedback show correct';
+
+    checkAndSaveHighScore();
+  }
+  updateScore();
+}
+
+function updateScore() {
+  scoreEl.textContent = `Pontuação: ${score} / ${questions.length}`;
+}
+
+function giveFeedback(isCorrect) {
+  if (isCorrect) {
+    feedbackEl.textContent = "✔ Correto!";
+    feedbackEl.className = 'feedback show correct';
+  } else {
+    feedbackEl.textContent = "✘ Errado!";
+    feedbackEl.className = 'feedback show incorrect';
+  }
+}
+
+function answerQuestion(userAnswer) {
+  trueBtn.disabled = true;
+  falseBtn.disabled = true;
+
+  const correctAnswer = questions[currentQuestion].answer;
+  const isCorrect = userAnswer === correctAnswer;
+
+  if (isCorrect) score++;
+
+  giveFeedback(isCorrect);
+
+  setTimeout(() => {
+    currentQuestion++;
+    loadQuestion();
+  }, 1500);
+}
+
+// Função para reiniciar o quiz
+function resetQuiz() {
+  currentQuestion = 0;
+  score = 0;
+  feedbackEl.textContent = '';
+  loadQuestion();
+}
+
+trueBtn.addEventListener('click', () => answerQuestion(true));
+falseBtn.addEventListener('click', () => answerQuestion(false));
+
+if (resetButton) {
+  resetButton.addEventListener('click', resetQuiz);
+}
+
+// NOVO: Adiciona o event listener para o botão de limpar recordes
+if (clearRecordsButton) {
+  clearRecordsButton.addEventListener('click', clearHighScores);
+}
+
+loadQuestion();
+renderHighScores();
+
+POLITICA
+const questions = [
+  {
+    question: "A capital do Brasil foi trasnferida do Rio para Brasilia em 1960.",
+    answer: true,
+    image: "https://wallup.net/wp-content/uploads/2019/09/421882-brasilia-brazil-capital-city-landscape-distrito-federal-president.jpg"
+  },
+  {
+    question: "O G7 é composto por paises emergentes liderado pela china.",
+    answer: false,
+    image: "https://www.aljazeera.net/wp-content/uploads/2022/03/image-324.jpg?resize=1920%2C1080&quality=80"
+  },
+  {
+    question: "A ONU foi fundada após a primeira guerra mundial.",
+    answer: false,
+    image: "https://www.gedistatic.it/content/gnn/img/lastampa/2022/09/20/201418833-a6672ed7-fb74-4b2f-8620-09971e79aa6a.jpg"
+  },
+  {
+    question: "O senado federal é composto por 100 senadores.",
+    answer: false,
+    image: "https://static.mundoeducacao.uol.com.br/mundoeducacao/2022/03/senado.jpg"
+  },
+  {
+    question: "A ditadura militar terminou em 1985.",
+    answer: true,
+    image: "https://saci.org.br/wp-content/uploads/2019/04/historia-da-ditadura-militar-1024x574.jpg"
+  },
+  {
+    question: "A corrupção na política é um problema exclusivo do Brasil, não existindo em outras nações.",
+    answer: false,
+    image: "https://www.fecomercio.com.br/upload/editor/charges_um_brasil/portal__733__1__charges_brandao_rabinovici_.png"
+  },
+  {
+    question: "O Poder Legislativo é responsável por criar as leis.",
+    answer: true,
+    image: "https://conhecimentocientifico.r7.com/wp-content/uploads/2020/07/poder-legislativo-o-que-e-conceito-e-caracteristica.jpg"
+  },
+  {
+    question: "O voto no Brasil é obrigatório para todos os cidadãos entre 18 e 70 anos.",
+    answer: true,
+    image: "https://www.tre-sp.jus.br/imagens/fotos/locais-de-voto/@@images/3009f6fd-c85f-41e1-9a0f-f44a856b4414.jpeg"
+  },
+  {
+    question: "O voto branco é igual ao voto nulo e não afeta o resultado da eleição.",
+    answer: true,
+    image: "https://www.camara.leg.br/midias/image/2022/08/ilustra-eleicao-voto-branco.jpg"
+  },
+  {
+    question: "Um presidente pode governar por mais de dois mandatos seguidos no Brasil.",
+    answer: false,
+    image: "https://imagens.ebc.com.br/ZmwwmbHpKGa45tYM_WnzN0vYl9Y=/1170x700/smart/https://agenciabrasil.ebc.com.br/sites/default/files/thumbnails/image/lula-ministros1_mcamgo_abr_221220221818-8.jpg?itok=QxBrqOT4"
+  },
+];
+
+let currentQuestion = 0;
+let score = 0;
+
+const questionEl = document.getElementById('question');
+const questionImageEl = document.getElementById('question-image');
+const trueBtn = document.getElementById('true-btn');
+const falseBtn = document.getElementById('false-btn');
+const feedbackEl = document.getElementById('feedback');
+const scoreEl = document.getElementById('score');
+const highScoresEl = document.getElementById('high-scores');
+// Referência ao botão de reiniciar
+const resetButton = document.getElementById('reset-btn');
+// NOVO: Referência ao botão de limpar recordes
+const clearRecordsButton = document.getElementById('clear-records-btn');
+
+// ===================== SISTEMA DE RECORDES =====================
+
+const HIGH_SCORES_KEY = 'highScores';
+
+function getHighScores() {
+  const highScoresString = localStorage.getItem(HIGH_SCORES_KEY);
+  return highScoresString ? JSON.parse(highScoresString) : [];
+}
+
+function saveHighScores(highScores) {
+  localStorage.setItem(HIGH_SCORES_KEY, JSON.stringify(highScores));
+}
+
+function renderHighScores() {
+  const highScores = getHighScores();
+  highScoresEl.innerHTML = '';
+  highScores.forEach(scoreItem => {
+    const li = document.createElement('li');
+    li.textContent = `${scoreItem.name}: ${scoreItem.score}`;
+    highScoresEl.appendChild(li);
+  });
+}
+
+function checkAndSaveHighScore() {
+  const highScores = getHighScores();
+  const isNewHighScore = highScores.length < 5 || score > highScores[highScores.length - 1].score;
+
+  if (isNewHighScore) {
+    const playerName = prompt("Parabéns! Você fez um novo recorde! Digite seu nome:");
+    if (playerName) {
+      highScores.push({ name: playerName, score: score });
+      highScores.sort((a, b) => b.score - a.score);
+      if (highScores.length > 5) {
+        highScores.pop();
+      }
+      saveHighScores(highScores);
+      renderHighScores();
+    }
+  }
+}
+
+// NOVO: Função para limpar os recordes
+function clearHighScores() {
+  const confirmation = confirm("Tem certeza que deseja limpar todos os recordes?");
+  if (confirmation) {
+    localStorage.removeItem(HIGH_SCORES_KEY);
+    renderHighScores();
+  }
+}
+
+// ===================== LÓGICA DO QUIZ =====================
+
+function loadQuestion() {
+  feedbackEl.className = 'feedback';
+
+  if (currentQuestion < questions.length) {
+    const current = questions[currentQuestion];
+    questionEl.textContent = current.question;
+
+    if (current.image) {
+      questionImageEl.src = current.image;
+      questionImageEl.alt = "Imagem relacionada à pergunta";
+      questionImageEl.style.display = "block";
+    } else {
+      questionImageEl.style.display = "none";
+    }
+
+    trueBtn.disabled = false;
+    falseBtn.disabled = false;
+    trueBtn.style.display = "inline-block";
+    falseBtn.style.display = "inline-block";
+
+  } else {
+    // Quiz finalizado
+    questionEl.textContent = "Quiz finalizado!";
+    questionImageEl.style.display = "none";
+    trueBtn.style.display = "none";
+    falseBtn.style.display = "none";
+    feedbackEl.textContent = `Sua pontuação final: ${score} / ${questions.length}`;
+    feedbackEl.className = 'feedback show correct';
+
+    checkAndSaveHighScore();
+  }
+  updateScore();
+}
+
+function updateScore() {
+  scoreEl.textContent = `Pontuação: ${score} / ${questions.length}`;
+}
+
+function giveFeedback(isCorrect) {
+  if (isCorrect) {
+    feedbackEl.textContent = "✔ Correto!";
+    feedbackEl.className = 'feedback show correct';
+  } else {
+    feedbackEl.textContent = "✘ Errado!";
+    feedbackEl.className = 'feedback show incorrect';
+  }
+}
+
+function answerQuestion(userAnswer) {
+  trueBtn.disabled = true;
+  falseBtn.disabled = true;
+
+  const correctAnswer = questions[currentQuestion].answer;
+  const isCorrect = userAnswer === correctAnswer;
+
+  if (isCorrect) score++;
+
+  giveFeedback(isCorrect);
+
+  setTimeout(() => {
+    currentQuestion++;
+    loadQuestion();
+  }, 1500);
+}
+
+// Função para reiniciar o quiz
+function resetQuiz() {
+  currentQuestion = 0;
+  score = 0;
+  feedbackEl.textContent = '';
+  loadQuestion();
+}
+
+trueBtn.addEventListener('click', () => answerQuestion(true));
+falseBtn.addEventListener('click', () => answerQuestion(false));
+
+if (resetButton) {
+  resetButton.addEventListener('click', resetQuiz);
+}
+
+// NOVO: Adiciona o event listener para o botão de limpar recordes
+if (clearRecordsButton) {
+  clearRecordsButton.addEventListener('click', clearHighScores);
+}
+
+loadQuestion();
+renderHighScores();
+
+TI
+const questions = [
+    {
+      question: "O 5G é uma tecnologia de rede móvel que oferece velocidades inferiores ao 4G.",
+      answer: false,
+      image: "https://img.us.news.samsung.com/us/wp-content/uploads/2020/01/13095545/5G-image-2-e1582847524844.jpeg"
+    },
+    {
+      question: "Os vírus de computador podem se espalhar apenas quando usuários clicam em links maliciosos.",
+      answer: false,
+      image: "https://clongeek.com/wp-content/uploads/2020/10/cso_computer_infection_spreading_virus_worm_by_juan_fernando_velez_melguizo_gettyimages-1082271852_2400x1600-100807410-large.jpg"
+    },
+    {
+      question: "A linguagem de programação Python não é indicada para desenvolvimento de aplicações web.",
+      answer: false,
+      image: "https://ideacdn.net/idea/ct/82/myassets/blogs/python-avantaj.jpg?revision=1581874510"
+    },
+    {
+      question: "A memória RAM é responsável por armazenar dados temporários enquanto o computador está ligado.",
+      answer: true,
+      image: "https://www.worten.pt/i/973ae2b22e26223ab3e1c270d3fdb8321f4f70a9.jpg"
+    },
+    {
+      question: "TI Verde é uma prática voltada exclusivamente para o descarte inteligente de equipamentos sem considerar o consumo de energia.",
+      answer: false,
+      image: "https://www.opservices.com.br/wp-content/uploads/2015/06/TI-Verde-768x506.png"
+    },
+    {
+      question: "A sigla Wi-Fi significa 'Wireless Fidelity' (Fidelidade Sem Fio).",
+      answer: false,
+      image: "https://tse1.mm.bing.net/th/id/OIP.pSkTnv0EYOuB2p8svcInCgHaEk?rs=1&pid=ImgDetMain&o=7&rm=3"
+    },
+    {
+      question: "O primeiro iPhone foi lançado em 2007.",
+      answer: true,
+      image: "https://th.bing.com/th/id/OIP.8cJE57ag0kC4ybp39A0mUAHaE8?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3"
+    },
+    {
+      question: "Um gigabyte é maior que um megabyte.",
+      answer: true,
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROSU1N9fdGkLqS2gQ7t1S9wb0-Rqj22UCtVQ&s"
+    },
+    {
+      question: "Um bug em computadores recebeu esse nome por causa de um inseto.",
+      answer: true,
+      image: "https://i7host.com.br/blog/wp-content/uploads/2024/01/bug.jpg"
+    },
+    {
+      question: "O spam é um tipo de e-mail indesejado e enviado em massa.",
+      answer: true,
+      image: "https://s2-techtudo.glbimg.com/thTNXmAFETofly-uFSQE1rZb0MQ=/0x0:695x400/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_08fbf48bc0524877943fe86e43087e7a/internal_photos/bs/2021/V/2/dr4qQORlymaWT4sgWeTQ/2016-05-31-gmail-0.jpg"
+    },
+  ];
+  
+  let currentQuestion = 0;
+  let score = 0;
+  
+  const questionEl = document.getElementById('question');
+  const questionImageEl = document.getElementById('question-image');
+  const trueBtn = document.getElementById('true-btn');
+  const falseBtn = document.getElementById('false-btn');
+  const feedbackEl = document.getElementById('feedback');
+  const scoreEl = document.getElementById('score');
+  const highScoresEl = document.getElementById('high-scores');
+  // Referência ao botão de reiniciar
+  const resetButton = document.getElementById('reset-btn');
+  // NOVO: Referência ao botão de limpar recordes
+  const clearRecordsButton = document.getElementById('clear-records-btn');
+  
+  // ===================== SISTEMA DE RECORDES =====================
+  
+  const HIGH_SCORES_KEY = 'highScores';
+  
+  function getHighScores() {
+    const highScoresString = localStorage.getItem(HIGH_SCORES_KEY);
+    return highScoresString ? JSON.parse(highScoresString) : [];
+  }
+  
+  function saveHighScores(highScores) {
+    localStorage.setItem(HIGH_SCORES_KEY, JSON.stringify(highScores));
+  }
+  
+  function renderHighScores() {
+    const highScores = getHighScores();
+    highScoresEl.innerHTML = '';
+    highScores.forEach(scoreItem => {
+      const li = document.createElement('li');
+      li.textContent = `${scoreItem.name}: ${scoreItem.score}`;
+      highScoresEl.appendChild(li);
+    });
+  }
+  
+  function checkAndSaveHighScore() {
+    const highScores = getHighScores();
+    const isNewHighScore = highScores.length < 5 || score > highScores[highScores.length - 1].score;
+  
+    if (isNewHighScore) {
+      const playerName = prompt("Parabéns! Você fez um novo recorde! Digite seu nome:");
+      if (playerName) {
+        highScores.push({ name: playerName, score: score });
+        highScores.sort((a, b) => b.score - a.score);
+        if (highScores.length > 5) {
+          highScores.pop();
+        }
+        saveHighScores(highScores);
+        renderHighScores();
+      }
+    }
+  }
+  
+  // NOVO: Função para limpar os recordes
+  function clearHighScores() {
+    const confirmation = confirm("Tem certeza que deseja limpar todos os recordes?");
+    if (confirmation) {
+      localStorage.removeItem(HIGH_SCORES_KEY);
+      renderHighScores();
+    }
+  }
+  
+  // ===================== LÓGICA DO QUIZ =====================
+  
+  function loadQuestion() {
+    feedbackEl.className = 'feedback';
+  
+    if (currentQuestion < questions.length) {
+      const current = questions[currentQuestion];
+      questionEl.textContent = current.question;
+  
+      if (current.image) {
+        questionImageEl.src = current.image;
+        questionImageEl.alt = "Imagem relacionada à pergunta";
+        questionImageEl.style.display = "block";
+      } else {
+        questionImageEl.style.display = "none";
+      }
+  
+      trueBtn.disabled = false;
+      falseBtn.disabled = false;
+      trueBtn.style.display = "inline-block";
+      falseBtn.style.display = "inline-block";
+  
+    } else {
+      // Quiz finalizado
+      questionEl.textContent = "Quiz finalizado!";
+      questionImageEl.style.display = "none";
+      trueBtn.style.display = "none";
+      falseBtn.style.display = "none";
+      feedbackEl.textContent = `Sua pontuação final: ${score} / ${questions.length}`;
+      feedbackEl.className = 'feedback show correct';
+  
+      checkAndSaveHighScore();
+    }
+    updateScore();
+  }
+  
+  function updateScore() {
+    scoreEl.textContent = `Pontuação: ${score} / ${questions.length}`;
+  }
+  
+  function giveFeedback(isCorrect) {
+    if (isCorrect) {
+      feedbackEl.textContent = "✔ Correto!";
+      feedbackEl.className = 'feedback show correct';
+    } else {
+      feedbackEl.textContent = "✘ Errado!";
+      feedbackEl.className = 'feedback show incorrect';
+    }
+  }
+  
+  function answerQuestion(userAnswer) {
+    trueBtn.disabled = true;
+    falseBtn.disabled = true;
+  
+    const correctAnswer = questions[currentQuestion].answer;
+    const isCorrect = userAnswer === correctAnswer;
+  
+    if (isCorrect) score++;
+  
+    giveFeedback(isCorrect);
+  
+    setTimeout(() => {
+      currentQuestion++;
+      loadQuestion();
+    }, 1500);
+  }
+  
+  // Função para reiniciar o quiz
+  function resetQuiz() {
+    currentQuestion = 0;
+    score = 0;
+    feedbackEl.textContent = '';
+    loadQuestion();
+  }
+  
+  trueBtn.addEventListener('click', () => answerQuestion(true));
+  falseBtn.addEventListener('click', () => answerQuestion(false));
+  
+  if (resetButton) {
+    resetButton.addEventListener('click', resetQuiz);
+  }
+  
+  // NOVO: Adiciona o event listener para o botão de limpar recordes
+  if (clearRecordsButton) {
+    clearRecordsButton.addEventListener('click', clearHighScores);
+  }
+  
+  loadQuestion();
+  renderHighScores();
+  
