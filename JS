@@ -3,6 +3,7 @@ function navigateTo(page) {
   window.location.href = page;
 }
 
+
 fUTEBOL
 const questions = [
   {
@@ -636,6 +637,7 @@ renderHighScores();
 
 
 
+
 TI
 const questions = [
     {
@@ -845,3 +847,100 @@ if (clearRecordsButton) {
 
 loadQuestion();
 renderHighScores();
+
+
+ESCOLHA
+document.getElementById("btn-google").onclick = function () {
+    window.location.href = "http://127.0.0.1:5500/teste.html";
+  };
+  
+  document.getElementById("btn-wikipedia").onclick = function () {
+    window.location.href = "http://127.0.0.1:5500/tema.html";
+  };
+
+TESTE
+const rounds = [
+  [
+    { text: "Você não vai acreditar no que esse político fez ontem!", points: 10, isFake: true },
+    { text: "Novo estudo revela dados sobre saúde pública", points: 3, isFake: false },
+    { text: "Veja como este alimento pode mudar sua vida em 7 dias!", points: 8, isFake: true }
+  ],
+  [
+    { text: "Essa celebridade revelou seu segredo de beleza chocante!", points: 9, isFake: true },
+    { text: "Taxa de juros sofre leve alteração, diz Banco Central", points: 2, isFake: false },
+    { text: "Descubra como ganhar dinheiro sem sair de casa!", points: 7, isFake: true }
+  ],
+  [
+    { text: "Este truque simples vai salvar seu casamento!", points: 10, isFake: true },
+    { text: "Relatório anual do IBGE mostra crescimento moderado", points: 2, isFake: false },
+    { text: "Veja como emagrecer comendo chocolate!", points: 8, isFake: true }
+  ],
+  [
+    { text: "Nova vacina causa reações inesperadas, dizem usuários", points: 9, isFake: true },
+    { text: "Ministério da Saúde atualiza protocolo de atendimento", points: 3, isFake: false },
+    { text: "Este chá milagroso promete curar tudo!", points: 10, isFake: true }
+  ],
+  [
+    { text: "Influenciador é visto em situação embaraçosa!", points: 8, isFake: true },
+    { text: "Nova lei entra em vigor na próxima semana", points: 2, isFake: false },
+    { text: "Veja como este produto pode mudar sua vida!", points: 9, isFake: true }
+  ]
+];
+
+let currentRound = 0;
+let score = 0;
+
+function updateScoreboard() {
+  document.getElementById("scoreboard").textContent = `Pontos: ${score} | Rodada: ${currentRound + 1}/${rounds.length}`;
+}
+
+function showRound() {
+  const gameArea = document.getElementById("game-area");
+  const result = document.getElementById("result");
+  result.textContent = "";
+  gameArea.innerHTML = "";
+
+  rounds[currentRound].forEach((headline, index) => {
+    const div = document.createElement("div");
+    div.className = "headline";
+    div.textContent = headline.text;
+    div.onclick = () => chooseHeadline(index);
+    gameArea.appendChild(div);
+  });
+
+  updateScoreboard();
+}
+
+function chooseHeadline(index) {
+  const chosen = rounds[currentRound][index];
+  score += chosen.points;
+
+  const result = document.getElementById("result");
+  const veracidade = chosen.isFake ? "❌ Fake News" : "✅ Verdadeira";
+  result.innerHTML = `Você ganhou ${chosen.points} pontos!<br>${veracidade}`;
+
+  currentRound++;
+  if (currentRound < rounds.length) {
+    setTimeout(showRound, 3000);
+  } else {
+    setTimeout(() => {
+      document.getElementById("game-area").innerHTML = "";
+      result.innerHTML = `
+        🏁 Fim do jogo! Sua pontuação final foi ${score} pontos.<br><br>
+        <button id="restart-button">🔁 Jogar novamente</button>
+      `;
+      document.getElementById("scoreboard").textContent = `Pontos: ${score} | Rodada: ${rounds.length}/${rounds.length}`;
+      document.getElementById("restart-button").onclick = restartGame;
+    }, 3000);
+  }
+}
+
+function restartGame() {
+  currentRound = 0;
+  score = 0;
+  document.getElementById("result").textContent = "";
+  document.getElementById("game-area").innerHTML = "";
+  showRound();
+}
+
+showRound();
