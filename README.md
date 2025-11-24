@@ -2,24 +2,32 @@ TEMA
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Caça ao Clickbait</title>
-  <link rel="stylesheet" href="teste.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Escolha sua página</title>
+  <link rel="stylesheet" href="tema.css" />
 </head>
 <body>
 
-  <div id="scoreboard">Pontos: 0 | Rodada: 1/5</div>
+  <main>
+    <div class="titulo">QUIZ:VERDADEIRO OU FALSO</div>
+  
+    <div class="descricao">
+      <p>O formato verdadeiro ou falso ajuda a identificar fake news porque estimula o pensamento crítico. Ao julgar se uma afirmação é confiável, o jogador aprende a observar a linguagem, a fonte e o conteúdo. Isso treina o olhar para reconhecer exageros, manipulações ou informações sem base real, tornando o jogo uma ferramenta educativa contra a desinformação.</p>
+    </div>
 
-  <h1>📰 Caça ao Clickbait</h1>
-  <p>Escolha a manchete mais sensacionalista!</p>
+    <div class="container">
+      <h1>Escolha uma opção:</h1>
+      <button onclick="navigateTo('futebol.html')">Esporte</button>
+      <button onclick="navigateTo('TI.html')">Tecnologia</button>
+      <button onclick="navigateTo('politica.html')">Política</button>
+      <button onclick="navigateTo('geografia.html')">Geografia</button>
+    </div>
+    
+    <a href="pagina_anterior.html" onclick="history.back(); return false;" class="botao-voltar">Voltar</a>
+  </main>
 
-  <div id="game-area"></div>
-
-  <div id="result"></div>
-  <a href="pagina_anterior.html" onclick="history.back(); return false;" class="botao-voltar">Voltar</a>
-
- 
-  <script src="teste.js"></script>
+  <script src="tema.js"></script>
 </body>
 </html>
 
