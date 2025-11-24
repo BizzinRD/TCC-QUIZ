@@ -2,24 +2,27 @@ TEMA
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Escolha sua página</title>
-  <link rel="stylesheet" href="tema.css" />
+  <meta charset="UTF-8">
+  <title>Caça ao Clickbait</title>
+  <link rel="stylesheet" href="teste.css">
 </head>
 <body>
 
-  <script src="tema.js"></script>
+  <div id="scoreboard">Pontos: 0 | Rodada: 1/5</div>
+
+  <h1>📰 Caça ao Clickbait</h1>
+  <p>Escolha a manchete mais sensacionalista!</p>
+
+  <div id="game-area"></div>
+
+  <div id="result"></div>
+  <a href="pagina_anterior.html" onclick="history.back(); return false;" class="botao-voltar">Voltar</a>
+
+ 
+  <script src="teste.js"></script>
 </body>
 </html>
 
-<div class="container">
-  <h1>Escolha uma opção:</h1>
-  <button onclick="navigateTo('futebol.html')">Esporte</button>
-  <button onclick="navigateTo('TI.html')">Tecnologia</button>
-  <button onclick="navigateTo('politica.html')">Política</button>
-  <button onclick="navigateTo('geografia.html')">Geografia</button>
-</div>
 
 FUTEBOL
 <!DOCTYPE html>
@@ -52,10 +55,13 @@ FUTEBOL
     </div>
   </div>
   </div>
+  <a href="tema.html" onclick="history.back(); return false;" class="botao-voltar">Voltar</a>
 
   <script src="futebol.js"></script>
 </body>
 </html>
+
+
 
 GEOGRAFIA
 <!DOCTYPE html>
@@ -88,10 +94,12 @@ GEOGRAFIA
     </div>
   </div>
   </div>
+  <a href="tema.html" onclick="history.back(); return false;" class="botao-voltar">Voltar</a>
 
   <script src="geografia.js"></script>
 </body>
 </html>
+
 
 POLITICA
 <!DOCTYPE html>
@@ -123,6 +131,7 @@ POLITICA
       <button id="clear-records-btn" class="answer-btn">Limpar</button>
     </div>
   </div>
+  <a href="tema.html" onclick="history.back(); return false;" class="botao-voltar">Voltar</a>
 
   <script src="politica.js"></script>
 </body>
@@ -159,8 +168,61 @@ TI
     </div>
   </div>
   </div>
+  <a href="tema.html" onclick="history.back(); return false;" class="botao-voltar">Voltar</a>
 
   <script src="TI.js"></script>
 </body>
+</html>
+
+ESCOLHA
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Portal de Links</title>
+  <link rel="stylesheet" href="escolha.css">
+</head>
+<body>
+
+  <div class="container">
+    <h1>🌐 BEM-VINDO AO JOGOS FAKE NEWS</h1>
+    <p>Escolha um destino:</p>
+
+    <div class="button-group">
+      <button id="btn-google">CAÇA AO CLICKBAIT</button>
+      <button id="btn-wikipedia">QUIZ: FAKE NEWS</button>
+    </div>
+  </div>
+  
+  <script src="escolha.js"></script>
+</body>
+</html>
+
+
+TESTE
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Caça ao Clickbait</title>
+  <link rel="stylesheet" href="teste.css">
+</head>
+<body>
+
+  <div id="scoreboard">Pontos: 0 | Rodada: 1/5</div>
+
+  <h1>📰 Caça ao Clickbait</h1>
+  <p>Escolha a manchete mais sensacionalista!</p>
+
+  <div id="game-area"></div>
+
+  <div id="result"></div>
+  <a href="pagina_anterior.html" onclick="history.back(); return false;" class="botao-voltar">Voltar</a>
+
+ 
+  <script src="teste.js"></script>
+</body>
+</html>
+
 </html>
 
